@@ -1,4 +1,7 @@
-const posts = require("../data/posts");
+// const posts = require("../data/posts");
+
+//db import
+const connection = require("../data/db")
 
 // index
 function index(req, res) {
