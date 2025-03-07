@@ -75,19 +75,14 @@ function update(req, res) {
 
 //destroy
 function destroy(req, res) {
-    // res.send(`Eliminazione del post ${req.params.id}`);
-    let post = posts.find((el) => el.id === parseInt(req.params.id));
+    //Recuperiamo l'id dall' URL
+    const { id } = req.params;
 
-    //per id inesistenti
-    if (!post) {
-        res.status(404);
-        return res.json({ post: "not found" });
-    }
-
-    posts.splice(posts.indexOf(post), 1);
-
-    res.sendStatus(204);
-    console.log(posts);
+    //Eliminiamo la pizza dal menu
+    connection.query('DELETE FROM posts WHERE id = ?', [id], (err) => {
+        if (err) return res.status(500).json({ error: 'Failed to delete pizza' });
+        res.sendStatus(204)
+    });
 };
 
 //export
