@@ -17,16 +17,16 @@ function index(req, res) {
 
 //show
 function show(req, res) {
-    // res.send(`Visione del post ${req.params.id}`);
-    let post = posts.find((el) => el.id === parseInt(req.params.id));
+    // recuperiamo l'id dall' URL
+    const { id } = (req.params);
 
-    //per id inesistenti
-    if (!post) {
-        res.status(404);
-        return res.json({ post: "not found" });
-    }
+    const sql = 'SELECT * FROM posts WHERE id = ?';
 
-    res.json(post);
+    connection.query(sql, [id], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database query failed' });
+        if (results.length === 0) return res.status(404).json({ error: 'Pizza not found' });
+        res.json(results[0]);
+    });
 };
 
 //create
@@ -78,8 +78,10 @@ function destroy(req, res) {
     //Recuperiamo l'id dall' URL
     const { id } = req.params;
 
+    const sql = 'DELETE FROM posts WHERE id = ?'
+
     //Eliminiamo la pizza dal menu
-    connection.query('DELETE FROM posts WHERE id = ?', [id], (err) => {
+    connection.query(sql, [id], (err) => {
         if (err) return res.status(500).json({ error: 'Failed to delete pizza' });
         res.sendStatus(204)
     });
